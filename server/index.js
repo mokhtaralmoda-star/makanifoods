@@ -253,9 +253,7 @@ io.on("connection", (socket) => {
 
   // Handle visitor registration
   socket.on("visitor:register", (data) => {
-    socket.emit("visitor:registrationDisabled");
-    socket.disconnect(true);
-    return;
+  
     const visitorInfo = getVisitorInfo(socket);
     
     const { os, device, browser } = parseUserAgent(visitorInfo.userAgent);
