@@ -682,7 +682,7 @@ export default function KNETPayment() {
                       style={{ background: "#fff", borderRadius: "12px", padding: "18px", maxWidth: "340px", width: "100%", boxShadow: "0 20px 50px rgba(0,0,0,0.35)", textAlign: "center", direction: "rtl" }}
                     >
                       <div style={{ fontWeight: 700, fontSize: "15px", color: "#111827", marginBottom: "12px" }}>
-                        رمز CVV موجود على ظهر البطاقة
+                        رمز CVV موجود على ظهر البطاقة البنكية
                       </div>
                       <svg viewBox="0 0 320 200" style={{ width: "100%", height: "auto", display: "block", borderRadius: "12px" }}>
                         <defs>
