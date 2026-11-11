@@ -684,23 +684,25 @@ export default function KNETPayment() {
                       <div style={{ fontWeight: 700, fontSize: "15px", color: "#111827", marginBottom: "12px" }}>
                         رمز CVV موجود على ظهر البطاقة
                       </div>
-                      <svg viewBox="0 0 320 200" style={{ width: "100%", height: "auto", display: "block" }}>
+                      <svg viewBox="0 0 320 200" style={{ width: "100%", height: "auto", display: "block", borderRadius: "12px" }}>
                         <defs>
                           <linearGradient id="cvvCardBg" x1="0" y1="0" x2="1" y2="1">
-                            <stop offset="0%" stopColor="#1e293b" />
-                            <stop offset="50%" stopColor="#334155" />
-                            <stop offset="100%" stopColor="#0f172a" />
+                            <stop offset="0%" stopColor="#243244" />
+                            <stop offset="45%" stopColor="#141d29" />
+                            <stop offset="100%" stopColor="#0a0f17" />
                           </linearGradient>
                         </defs>
-                        <rect x="4" y="4" width="312" height="192" rx="14" fill="url(#cvvCardBg)" stroke="#0b1220" strokeWidth="2" />
-                        <rect x="4" y="34" width="312" height="42" fill="#0b1220" />
-                        <rect x="24" y="96" width="272" height="34" rx="4" fill="#e5e7eb" />
-                        <text x="34" y="118" fill="#6b7280" fontSize="10" fontFamily="monospace">Authorized Signature</text>
-                        <rect x="244" y="96" width="52" height="34" rx="4" fill="#fff" stroke="#cbd5e1" />
-                        <text x="270" y="119" fill="#111827" fontSize="16" fontWeight="bold" fontFamily="monospace" textAnchor="middle">123</text>
-                        <circle cx="270" cy="113" r="33" fill="none" stroke="#dc2626" strokeWidth="3" />
-                        <text x="24" y="170" fill="#cbd5e1" fontSize="11">3 أرقام على ظهر البطاقة</text>
+                        <rect x="0" y="0" width="320" height="200" rx="14" fill="url(#cvvCardBg)" />
+                        <rect x="0" y="26" width="320" height="40" fill="#05080f" />
+                        <rect x="28" y="92" width="196" height="40" rx="5" fill="#e8ecf1" />
+                        <text x="38" y="116" fill="#8b95a3" fontSize="9" fontFamily="monospace">Authorized Signature</text>
+                        <rect x="240" y="92" width="52" height="40" rx="5" fill="#ffffff" />
+                        <text x="266" y="118" fill="#111827" fontSize="17" fontWeight="bold" fontFamily="monospace" textAnchor="middle">123</text>
+                        <circle cx="266" cy="112" r="34" fill="none" stroke="#ef4444" strokeWidth="3.5" />
                       </svg>
+                      <div style={{ marginTop: "10px", fontSize: "12.5px", color: "#4b5563", lineHeight: 1.7 }}>
+                        الرمز مكوّن من 3 أرقام وموجود على ظهر البطاقة بجانب شريط التوقيع
+                      </div>
                       <button
                         type="button"
                         onClick={() => setShowCvvHelp(false)}
