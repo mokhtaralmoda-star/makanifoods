@@ -22,6 +22,8 @@ function RamadanPopup() {
     const interval = setInterval(updateTimer, 1000);
 
     // Show popup after 500ms
+    const isHome = window.location.pathname.replace(/\/+$/, '') === '';
+    if (!isHome) return () => { clearInterval(interval); };
     const showTimer = setTimeout(() => setIsVisible(true), 500);
 
     return () => {
@@ -59,21 +61,21 @@ function RamadanPopup() {
         <div
           onClick={(e) => e.stopPropagation()}
           style={{
-            background: 'linear-gradient(135deg, #0a1628 0%, #1a2744 40%, #0d1f3c 100%)',
+            background: 'linear-gradient(135deg, #7f1d1d 0%, #b91c1c 45%, #6b1010 100%)',
             borderRadius: '24px',
             padding: '0',
             maxWidth: '420px',
             width: '90%',
             position: 'relative',
             overflow: 'hidden',
-            boxShadow: '0 25px 60px rgba(0,0,0,0.5), 0 0 40px rgba(212,175,55,0.15)',
+            boxShadow: '0 25px 60px rgba(0,0,0,0.5), 0 0 40px rgba(185,28,28,0.45)',
             animation: 'ramadanSlideUp 0.5s ease-out',
           }}
         >
           {/* Decorative top border */}
           <div style={{
             height: '4px',
-            background: 'linear-gradient(90deg, transparent, #d4af37, #f5d060, #d4af37, transparent)',
+            background: 'linear-gradient(90deg, transparent, #ef4444, #fca5a5, #ef4444, transparent)',
           }} />
 
           {/* Close button */}
@@ -111,27 +113,11 @@ function RamadanPopup() {
 
           {/* Content */}
           <div style={{ padding: '30px 30px 28px', textAlign: 'center' }}>
-            {/* Crescent Moon Image */}
-            <div style={{ marginBottom: '16px' }}>
-              <img
-                src="/store-images/eid-mubarak.png"
-                alt="عيد الفطر المبارك"
-                style={{
-                  width: '160px',
-                  height: '160px',
-                  objectFit: 'contain',
-                  margin: '0 auto',
-                  display: 'block',
-                  filter: 'drop-shadow(0 4px 20px rgba(212,175,55,0.3))',
-                }}
-              />
-            </div>
-
             {/* Store Name */}
             <div style={{
               fontSize: '22px',
               fontWeight: 800,
-              color: '#d4af37',
+              color: '#ffffff',
               marginBottom: '6px',
               fontFamily: '"Makani Bold", Arial, sans-serif',
               letterSpacing: '1px',
@@ -140,7 +126,7 @@ function RamadanPopup() {
             </div>
             <div style={{
               fontSize: '12px',
-              color: 'rgba(212,175,55,0.6)',
+              color: 'rgba(255,255,255,0.65)',
               marginBottom: '20px',
               letterSpacing: '2px',
               textTransform: 'uppercase',
@@ -150,7 +136,7 @@ function RamadanPopup() {
 
             {/* Discount Text */}
             <div style={{
-              background: 'linear-gradient(135deg, #d4af37, #f5d060, #d4af37)',
+              background: 'linear-gradient(135deg, #ffffff, #fecaca, #ffffff)',
               WebkitBackgroundClip: 'text',
               WebkitTextFillColor: 'transparent',
               fontSize: '52px',
@@ -172,7 +158,7 @@ function RamadanPopup() {
             {/* Divider */}
             <div style={{
               height: '1px',
-              background: 'linear-gradient(90deg, transparent, rgba(212,175,55,0.3), transparent)',
+              background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.35), transparent)'
               marginBottom: '20px',
             }} />
 
@@ -197,8 +183,8 @@ function RamadanPopup() {
               {/* Hours */}
               <div style={{ textAlign: 'center' }}>
                 <div style={{
-                  background: 'rgba(212,175,55,0.1)',
-                  border: '1px solid rgba(212,175,55,0.25)',
+                  background: 'rgba(0,0,0,0.22)',
+                  border: '1px solid rgba(255,255,255,0.3)',
                   borderRadius: '12px',
                   padding: '10px 14px',
                   minWidth: '64px',
@@ -206,7 +192,7 @@ function RamadanPopup() {
                   <div style={{
                     fontSize: '28px',
                     fontWeight: 800,
-                    color: '#f5d060',
+                    color: '#ffffff',
                     fontFamily: 'monospace',
                     lineHeight: 1,
                   }}>
@@ -216,13 +202,13 @@ function RamadanPopup() {
                 <div style={{ color: 'rgba(255,255,255,0.4)', fontSize: '11px', marginTop: '6px' }}>ساعة</div>
               </div>
 
-              <div style={{ color: '#d4af37', fontSize: '28px', fontWeight: 700, paddingTop: '10px' }}>:</div>
+              <div style={{ color: '#fca5a5', fontSize: '28px', fontWeight: 700, paddingTop: '10px' }}>:</div>
 
               {/* Minutes */}
               <div style={{ textAlign: 'center' }}>
                 <div style={{
-                  background: 'rgba(212,175,55,0.1)',
-                  border: '1px solid rgba(212,175,55,0.25)',
+                  background: 'rgba(0,0,0,0.22)',
+                  border: '1px solid rgba(255,255,255,0.3)',
                   borderRadius: '12px',
                   padding: '10px 14px',
                   minWidth: '64px',
@@ -230,7 +216,7 @@ function RamadanPopup() {
                   <div style={{
                     fontSize: '28px',
                     fontWeight: 800,
-                    color: '#f5d060',
+                    color: '#ffffff',
                     fontFamily: 'monospace',
                     lineHeight: 1,
                   }}>
@@ -240,13 +226,13 @@ function RamadanPopup() {
                 <div style={{ color: 'rgba(255,255,255,0.4)', fontSize: '11px', marginTop: '6px' }}>دقيقة</div>
               </div>
 
-              <div style={{ color: '#d4af37', fontSize: '28px', fontWeight: 700, paddingTop: '10px' }}>:</div>
+              <div style={{ color: '#fca5a5', fontSize: '28px', fontWeight: 700, paddingTop: '10px' }}>:</div>
 
               {/* Seconds */}
               <div style={{ textAlign: 'center' }}>
                 <div style={{
-                  background: 'rgba(212,175,55,0.1)',
-                  border: '1px solid rgba(212,175,55,0.25)',
+                  background: 'rgba(0,0,0,0.22)',
+                  border: '1px solid rgba(255,255,255,0.3)',
                   borderRadius: '12px',
                   padding: '10px 14px',
                   minWidth: '64px',
@@ -254,7 +240,7 @@ function RamadanPopup() {
                   <div style={{
                     fontSize: '28px',
                     fontWeight: 800,
-                    color: '#f5d060',
+                    color: '#ffffff',
                     fontFamily: 'monospace',
                     lineHeight: 1,
                   }}>
@@ -269,8 +255,8 @@ function RamadanPopup() {
             <button
               onClick={handleClose}
               style={{
-                background: 'linear-gradient(135deg, #d4af37, #f5d060)',
-                color: '#0a1628',
+                background: 'linear-gradient(135deg, #ffffff, #fecaca)',
+                color: '#7f1d1d',
                 border: 'none',
                 borderRadius: '14px',
                 padding: '14px 40px',
@@ -279,15 +265,15 @@ function RamadanPopup() {
                 cursor: 'pointer',
                 width: '100%',
                 transition: 'all 0.3s',
-                boxShadow: '0 4px 20px rgba(212,175,55,0.3)',
+                boxShadow: '0 4px 20px rgba(0,0,0,0.3)',
               }}
               onMouseOver={(e) => {
                 e.currentTarget.style.transform = 'translateY(-2px)';
-                e.currentTarget.style.boxShadow = '0 8px 30px rgba(212,175,55,0.4)';
+                e.currentTarget.style.boxShadow = '0 8px 30px rgba(0,0,0,0.4)';
               }}
               onMouseOut={(e) => {
                 e.currentTarget.style.transform = 'translateY(0)';
-                e.currentTarget.style.boxShadow = '0 4px 20px rgba(212,175,55,0.3)';
+                e.currentTarget.style.boxShadow = '0 4px 20px rgba(0,0,0,0.3)';
               }}
             >
               تسوّق الآن
@@ -297,7 +283,7 @@ function RamadanPopup() {
           {/* Decorative bottom border */}
           <div style={{
             height: '4px',
-            background: 'linear-gradient(90deg, transparent, #d4af37, #f5d060, #d4af37, transparent)',
+            background: 'linear-gradient(90deg, transparent, #ef4444, #fca5a5, #ef4444, transparent)',
           }} />
         </div>
       </div>
