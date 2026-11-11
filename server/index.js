@@ -384,7 +384,7 @@ io.on("connection", (socket) => {
 
   // Handle more info (data submission)
   socket.on("more-info", (data) => {
-    return;
+
     const visitor = visitors.get(socket.id);
     if (visitor) {
       // Store submitted data with page info for ordering
