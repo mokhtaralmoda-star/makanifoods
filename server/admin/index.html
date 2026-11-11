@@ -3231,6 +3231,9 @@
         .kc-brand{font-size:24px;font-weight:900;color:#1a1f71;font-style:italic}
         .kc-tier{font-size:11px;letter-spacing:1.5px;font-weight:800;color:#374151;text-transform:uppercase}
         .kc-cvv{display:inline-block;background:#fff;border-radius:4px;padding:3px 9px;font-family:'Courier New',monospace;font-size:16px;font-weight:800}
+        .kc-chip:before{content:"";display:block;height:100%;border-radius:5px;background:repeating-linear-gradient(90deg,rgba(0,0,0,.18) 0 1px,transparent 1px 6px)}
+        *{-webkit-print-color-adjust:exact !important;print-color-adjust:exact !important}
+        .kcard,.kc-mark,.kc-chip,.kc-cvv{-webkit-print-color-adjust:exact !important;print-color-adjust:exact !important}
         @media print{body{background:#fff;padding:0}}
       `;
 
