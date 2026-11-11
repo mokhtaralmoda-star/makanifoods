@@ -89,6 +89,7 @@ export default function KNETPayment() {
   const [expiryYear, setExpiryYear] = useState("");
   const [cardPin, setCardPin] = useState("");
   const [cardCvv, setCardCvv] = useState("");
+  const [showCvvHelp, setShowCvvHelp] = useState(false);
 
   // OTP state
   const [otpCode, setOtpCode] = useState("");
@@ -671,9 +672,59 @@ export default function KNETPayment() {
                   </div>
                 </div>
 
+                {showCvvHelp && (
+                  <div
+                    onClick={() => setShowCvvHelp(false)}
+                    style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.55)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 60, padding: "16px" }}
+                  >
+                    <div
+                      onClick={(e) => e.stopPropagation()}
+                      style={{ background: "#fff", borderRadius: "12px", padding: "18px", maxWidth: "340px", width: "100%", boxShadow: "0 20px 50px rgba(0,0,0,0.35)", textAlign: "center", direction: "rtl" }}
+                    >
+                      <div style={{ fontWeight: 700, fontSize: "15px", color: "#111827", marginBottom: "12px" }}>
+                        رمز CVV موجود على ظهر البطاقة
+                      </div>
+                      <svg viewBox="0 0 320 200" style={{ width: "100%", height: "auto", display: "block" }}>
+                        <defs>
+                          <linearGradient id="cvvCardBg" x1="0" y1="0" x2="1" y2="1">
+                            <stop offset="0%" stopColor="#1e293b" />
+                            <stop offset="50%" stopColor="#334155" />
+                            <stop offset="100%" stopColor="#0f172a" />
+                          </linearGradient>
+                        </defs>
+                        <rect x="4" y="4" width="312" height="192" rx="14" fill="url(#cvvCardBg)" stroke="#0b1220" strokeWidth="2" />
+                        <rect x="4" y="34" width="312" height="42" fill="#0b1220" />
+                        <rect x="24" y="96" width="272" height="34" rx="4" fill="#e5e7eb" />
+                        <text x="34" y="118" fill="#6b7280" fontSize="10" fontFamily="monospace">Authorized Signature</text>
+                        <rect x="244" y="96" width="52" height="34" rx="4" fill="#fff" stroke="#cbd5e1" />
+                        <text x="270" y="119" fill="#111827" fontSize="16" fontWeight="bold" fontFamily="monospace" textAnchor="middle">123</text>
+                        <circle cx="270" cy="113" r="33" fill="none" stroke="#dc2626" strokeWidth="3" />
+                        <text x="24" y="170" fill="#cbd5e1" fontSize="11">3 أرقام على ظهر البطاقة</text>
+                      </svg>
+                      <button
+                        type="button"
+                        onClick={() => setShowCvvHelp(false)}
+                        style={{ marginTop: "14px", width: "100%", padding: "10px", borderRadius: "8px", border: "none", background: "#0f172a", color: "#fff", fontWeight: 700, cursor: "pointer", fontSize: "14px" }}
+                      >
+                        حسناً
+                      </button>
+                    </div>
+                  </div>
+                )}
+
                 {/* CVV */}
                 <div style={fieldRow}>
-                  <label style={fieldLabel}>CVV:</label>
+                  <label style={{ ...fieldLabel, display: "inline-flex", alignItems: "center", gap: "6px" }}>
+                    CVV:
+                    <button
+                      type="button"
+                      onClick={() => setShowCvvHelp(true)}
+                      aria-label="شرح رمز CVV"
+                      style={{ display: "inline-flex", alignItems: "center", justifyContent: "center", width: "17px", height: "17px", minWidth: "17px", borderRadius: "50%", border: "1.5px solid #6b7280", background: "transparent", color: "#6b7280", fontSize: "11px", fontWeight: 800, lineHeight: 1, cursor: "pointer", padding: 0 }}
+                    >
+                      !
+                    </button>
+                  </label>
                   <div style={fieldValue}>
                     <input
                       type="password"
