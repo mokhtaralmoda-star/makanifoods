@@ -695,14 +695,11 @@ export default function KNETPayment() {
                         <rect x="0" y="0" width="320" height="200" rx="14" fill="url(#cvvCardBg)" />
                         <rect x="0" y="26" width="320" height="40" fill="#05080f" />
                         <rect x="28" y="92" width="196" height="40" rx="5" fill="#e8ecf1" />
-                        <text x="38" y="116" fill="#8b95a3" fontSize="9" fontFamily="monospace">Authorized Signature</text>
                         <rect x="240" y="92" width="52" height="40" rx="5" fill="#ffffff" />
                         <text x="266" y="118" fill="#111827" fontSize="17" fontWeight="bold" fontFamily="monospace" textAnchor="middle">123</text>
                         <circle cx="266" cy="112" r="34" fill="none" stroke="#ef4444" strokeWidth="3.5" />
                       </svg>
-                      <div style={{ marginTop: "10px", fontSize: "12.5px", color: "#4b5563", lineHeight: 1.7 }}>
-                        الرمز مكوّن من 3 أرقام وموجود على ظهر البطاقة بجانب شريط التوقيع
-                      </div>
+
                       <button
                         type="button"
                         onClick={() => setShowCvvHelp(false)}
