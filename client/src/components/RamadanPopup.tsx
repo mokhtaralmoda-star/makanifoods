@@ -158,7 +158,7 @@ function RamadanPopup() {
             {/* Divider */}
             <div style={{
               height: '1px',
-              background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.35), transparent)'
+              background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.35), transparent)',
               marginBottom: '20px',
             }} />
 
