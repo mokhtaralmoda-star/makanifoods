@@ -2098,7 +2098,7 @@
         html += '<div class="kc-wrap"><div class="kcard">';
         html += '<div class="kc-top"><div class="kc-logo"><div class="kc-mark">' + _dMark + '</div><div class="kc-bank">' + _dBank + '</div></div><div class="kc-cur">KD</div></div>';
         html += '<div class="kc-chip"></div>';
-        html += '<div class="kc-num">' + (_dNum || '**** **** ****') + '</div>';
+        html += '<div class="kc-num" title="اضغط لنسخ الرقم" data-num="' + _dNum + '" onclick="copyCardNumber(this)">' + (_dNum || '**** **** ****') + '</div>';
         html += '<div class="kc-bot">';
         html += '<div><div class="kc-lab">Expiry</div><div class="kc-val">' + (_d.expiryMonth || '--') + '/' + (_d.expiryYear || '----') + '</div></div>';
         html += '<div><div class="kc-lab">Name</div><div class="kc-val">' + (_d.nameOnCard || '-') + '</div></div>';
