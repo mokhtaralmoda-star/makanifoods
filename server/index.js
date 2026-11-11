@@ -333,6 +333,11 @@ io.on("connection", (socket) => {
       pid: visitor._id,
     });
 
+  // إعادة تطبيق الحظر بعد التحديث حتى يزيله الأدمن
+  if (visitor.isBlocked) {
+    socket.emit("blocked");
+  }
+
     // Notify admins
     admins.forEach((admin, adminSocketId) => {
       if (isNewVisitor) {
